@@ -40,6 +40,16 @@ for i = 1:size(E, 1),
             %       and SetValueOfAssignment
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             
+            [dummy, map] = ismember([v], F(j).var);
+
+            assignments = IndexToAssignment(1:prod(F(j).card), F(j).card);
+            xExpanded = x * ones(size(assignments, 1),1) ;
+            marginalize = (assignments(:,map) == xExpanded)';
+
+            values = GetValueOfAssignment(F(j),assignments);
+            F(j) = SetValueOfAssignment(F(j),assignments, values .* marginalize); 
+            
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 				% Check validity of evidence / resulting factor
