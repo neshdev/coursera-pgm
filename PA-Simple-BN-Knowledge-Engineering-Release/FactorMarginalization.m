@@ -38,6 +38,8 @@ indxB = AssignmentToIndex(assignments(:, mapB), B.card);
 % YOUR CODE HERE
 % Correctly populate the factor values of B
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+b_val = accumarray(indxB, A.val);
+b_assignments = IndexToAssignment(1:length(B.val), B.card);
+B = SetValueOfAssignment(B, b_assignments, b_val);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
