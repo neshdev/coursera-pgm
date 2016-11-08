@@ -27,7 +27,10 @@ end
 % Remember to renormalize the entries of M!
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-M = struct('var', [], 'card', [], 'val', []); % Returns empty factor. Change this.
+  M = ComputeJointDistribution(F);
+  M = ObserveEvidence(M, E);
+  M.val = M.val / sum(M.val);
+  M = FactorMarginalization(M,  setdiff(M.var, V));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
