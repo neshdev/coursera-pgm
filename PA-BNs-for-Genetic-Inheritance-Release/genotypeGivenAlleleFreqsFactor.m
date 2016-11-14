@@ -59,7 +59,36 @@ numAlleles = length(alleleFreqs);
 % Fill in genotypeFactor.var.  This should be a 1-D row vector.
 % Fill in genotypeFactor.card.  This should be a 1-D row vector.
 
+genotypeFactor.var = [genotypeVar];
+genotypeFactor.card = [nchoosek(numAlleles,2) + numAlleles];
+
+
 genotypeFactor.val = zeros(1, prod(genotypeFactor.card));
 % Replace the zeros in genotypeFactor.val with the correct values.
+
+x = reshape(allelesToGenotypes,prod(size(allelesToGenotypes)),1);
+# x = [ 1; 2; 3]
+
+y = genotypesToAlleles(x,:);
+# y = [ 1 1 ; 1 2; 1 2; 2 2;]
+
+p = alleleFreqs(y);
+# p = [ .1 .1; .1 .9; .1 .9; .9 .9]
+
+v = p(:,1) .* p(:,2);
+# v = [ .01; .09; .09; .81]
+
+z = accumarray(y,v);
+
+# z = [ .01 .18; 0 .81]
+
+v1 = genotypesToAlleles(:,1);
+v2 = genotypesToAlleles(:,2);
+
+v = diag(z(v1,v2))';
+
+A = IndexToAssignment(1:prod(genotypeFactor.card), genotypeFactor.card);
+genotypeFactor = SetValueOfAssignment(genotypeFactor, A, v);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
