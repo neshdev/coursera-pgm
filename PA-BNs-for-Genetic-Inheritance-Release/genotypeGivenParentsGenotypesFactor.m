@@ -58,8 +58,35 @@ genotypeFactor = struct('var', [], 'card', [], 'val', []);
 
 % Fill in genotypeFactor.var.  This should be a 1-D row vector.
 % Fill in genotypeFactor.card.  This should be a 1-D row vector.
-
-genotypeFactor.val = zeros(1, prod(genotypeFactor.card));
 % Replace the zeros in genotypeFactor.val with the correct values.
+
+genotypeFactor.var = [genotypeVarChild, genotypeVarParentOne, genotypeVarParentTwo];
+genotypeFactor.card = ones(1,3) * nchoosek(numAlleles,2) + numAlleles;
+genotypeFactor.val = zeros(1, prod(genotypeFactor.card));
+
+A = IndexToAssignment(1:prod(genotypeFactor.card), genotypeFactor.card);
+
+parent1 = A(:,2);
+parent2 = A(:,3);
+child = A(:,1);
+
+parent1_index = genotypesToAlleles(parent1,:);
+parent2_index = genotypesToAlleles(parent2,:);
+child_index = genotypesToAlleles(child,:);
+v = zeros(1, prod(genotypeFactor.card));
+
+for i = 1:length(v)
+  [x1,x2] = meshgrid(parent1_index(i,:),parent2_index(i,:));
+  x=cat(2,x1',x2');
+  p1_p2=reshape(x,[],2);
+  p1_p2=sort(p1_p2,2);
+  c = child_index(i,:);
+  [count, dummy] = ismember(p1_p2, c, "rows");
+  v(i) = sum(count);
+endfor
+
+v = v / 4;
+
+genotypeFactor = SetValueOfAssignment(genotypeFactor, A, v);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
