@@ -60,8 +60,28 @@ phenotypeFactor = struct('var', [], 'card', [], 'val', []);
 
 % Fill in phenotypeFactor.var.  This should be a 1-D row vector.
 % Fill in phenotypeFactor.card.  This should be a 1-D row vector.
-
-phenotypeFactor.val = zeros(1, prod(phenotypeFactor.card));
 % Replace the zeros in phentoypeFactor.val with the correct values.
+
+phenotypeFactor.var = [phenotypeVar, geneCopyVarOne, geneCopyVarTwo];
+phenotypeFactor.card = [ 2 ,numAlleles , numAlleles];
+phenotypeFactor.val = zeros(1, prod(phenotypeFactor.card));
+v = zeros(1, prod(phenotypeFactor.card));
+
+A = IndexToAssignment(1:prod(phenotypeFactor.card), phenotypeFactor.card);
+
+activated = A(:,1) == 1;
+activated_index = find(A(:,1)==1);
+prob = sort(A(activated,2:3),2);
+[x,y] = ismember(prob, genotypesToAlleles, "rows");
+v(activated_index) = alphaList(y);
+
+not_activated = A(:,1) == 2;
+not_activated_index = find(A(:,1)==2);
+prob = sort(A(not_activated,2:3),2);
+[x,y] = ismember(prob, genotypesToAlleles, "rows");
+v(not_activated_index) = 1-alphaList(y);
+
+phenotypeFactor = SetValueOfAssignment(phenotypeFactor, A, v);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
