@@ -51,4 +51,37 @@ phenotypeFactor = struct('var', [], 'card', [], 'val', []);
 phenotypeFactor.val = zeros(1, prod(phenotypeFactor.card));
 % Replace the zeros in phentoypeFactor.val with the correct values.
 
+numVar1 = length(geneCopyVarOneList);
+numVar2 = length(geneCopyVarTwoList);
+numAllele1 = length(alleleWeights{1});
+numAllele2 = length(alleleWeights{2});
+
+phenotypeFactor.var = cat(2, [phenotypeVar], geneCopyVarOneList', geneCopyVarTwoList')
+
+phenotypeFactor.card = zeros(1, 1 + numVar1 + numVar2); 
+phenotypeFactor.card(1) = 2;
+phenotypeFactor.card(2:1+numVar1) = numVar1;
+phenotypeFactor.card(2+numVar1:end) = numVar2;
+
+% Initialise parameter z in sigmoid function
+z = zeros(prod(phenotypeFactor.card)/2, 1); 
+
+% Generate assignment
+assignment = IndexToAssignment(1:prod(phenotypeFactor.card)/2, phenotypeFactor.card(2:end));
+phenotypeFactor.val = zeros(1, prod(phenotypeFactor.card));
+
+% Replace the zeros in phentoypeFactor.val with the correct values.
+for(i=1:prod(phenotypeFactor.card)/2) % go through each gene
+    for(j=1:numVar1)
+        z(i) += alleleWeights{j}(assignment(i,j));
+    end;
+    for(k=1:numVar2)
+        z(i) += alleleWeights{k}(assignment(i,numVar1+k));
+    end;
+end;
+
+sigmoidValue = computeSigmoid(z);
+phenotypeFactor.val(1:2:end-1) = sigmoidValue;
+phenotypeFactor.val(2:2:end) = 1 .- sigmoidValue;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
