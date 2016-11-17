@@ -82,4 +82,26 @@ numAlleles = length(alleleFreqs); % Number of alleles
 % 2*numPeople+1 - 3*numPeople: phenotype variables
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 
+
+noparents_index = find(pedigree.parents(:,1) == 0)';
+parents_index = find(pedigree.parents(:,1) != 0)';
+
+#create Genotype  without parents
+for i = noparents_index
+  factorList(i) = childCopyGivenFreqsFactor(alleleFreqs, i);
+  factorList(i+numPeople) = childCopyGivenFreqsFactor(alleleFreqs, i+numPeople);
+endfor
+
+#create Genotype  with parents
+for i = parents_index
+  factorList(i) = childCopyGivenParentalsFactor(numAlleles, i, pedigree.parents(i,1), pedigree.parents(i,1) + numPeople);
+  factorList(i+numPeople) = childCopyGivenParentalsFactor(numAlleles, i+numPeople, pedigree.parents(i,2), pedigree.parents(i,2) + numPeople);
+endfor
+
+%create phenotype
+for i = 1:numPeople
+  factorList(i+2*numPeople) = phenotypeGivenCopiesFactor(alphaList, numAlleles, i, numPeople + i,  2*numPeople + i);
+endfor
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  

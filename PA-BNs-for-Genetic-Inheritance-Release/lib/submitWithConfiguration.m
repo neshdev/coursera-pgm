@@ -63,7 +63,12 @@ function response = submitParts(conf, email, token, parts)
   body = makePostBody(conf, email, token, parts);
   submissionUrl = submissionUrl();
   params = {'jsonBody', body};
-  [code, responseBody] = system(sprintf('echo jsonBody=%s | curl -k -X POST -d @- %s', body, submissionUrl));
+  respFile='tmpfile.txt';
+  fid=fopen(respFile,'w');
+  fprintf(fid,'jsonBody=%s', body);
+  fclose(fid);
+  [code, responseBody] = system(sprintf('curl -k -X POST -d @%s %s', respFile, submissionUrl)); %Peer certificate patch
+  %old code: responseBody = urlread(submissionUrl, 'post', params);
   response = loadjson(responseBody);
 end
 
