@@ -36,11 +36,10 @@ part1_groundTruth = part1(1).groundTruth;
 imageModel = models.imageModel;
 pairwiseModel = models.pairwiseModel;
 tripletList = models.tripletList;
-K = models.imageModel.K;
+
 
 #imageModel.ignoreSimilarity = true;
-#allFactors = BuildOCRNetwork (images, imageModel, pairwiseModel, tripletList);
-#RunInference(allFactors);
+
 #ScoreModel(data.allWords, imageModel, [], []);
 #ScoreModel(data.allWords, imageModel, pairwiseModel, []);
 #ScoreModel(data.allWords, imageModel, pairwiseModel, tripletList)
@@ -48,10 +47,20 @@ K = models.imageModel.K;
 #z1 = ComputePairwiseFactors(images, pairwiseModel, K)
 #factors = ComputeTripletFactors (images, tripletList, K)
 
-
-images = samples.Part5SampleImagesInput;
+#imageModel.ignoreSimilarity = true;
+allFactors = samples.Part6SampleFactorsInput;
 K = models.imageModel.K;
-allFactors = ComputeAllSimilarityFactors(images, K)
+F = 2;
+top = ChooseTopSimilarityFactors (allFactors, F)
 
+samples.Part6SampleFactorsOutput.var
+top.var
+#allFactors = BuildOCRNetwork (images, imageModel, pairwiseModel, tripletList);
 
+%z = RunInference(allFactors);
+%A = (65:90);
+%S = char(A);
+%A = A - 64;
+%S(z)
+%
 

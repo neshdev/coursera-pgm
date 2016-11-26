@@ -23,7 +23,12 @@ if (length(allFactors) <= F)
 end
 
 % Your code here:
-factors = allFactors; %%% REMOVE THIS LINE
+#factors = allFactors(1:F); %%% REMOVE THIS LINE
+z = cat(2, allFactors(:,1).val);
 
+z = [z(1,:); 1:size(z,2)];
+[Y,I] = sort(z(1,:),'descend');
+z = z(2,:)(I)(1:F);
+factors = allFactors(z);
 end
 
