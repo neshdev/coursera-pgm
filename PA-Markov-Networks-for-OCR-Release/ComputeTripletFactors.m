@@ -28,5 +28,14 @@ end
 factors = repmat(struct('var', [], 'card', [], 'val', []), n - 2, 1);
 
 % Your code here:
+for i=1:n-2
+  factors(i).var = [i,i+1,i+2];
+  factors(i).card = [K,K,K];
+  factors(i).val = ones(prod(factors(i).card),1);
+  A = cat(1,tripletList(:,:).chars);
+  v = cat(1,tripletList(:,:).factorVal);
+  factors(i) = SetValueOfAssignment(factors(i), A, v);
+endfor
+
 
 end

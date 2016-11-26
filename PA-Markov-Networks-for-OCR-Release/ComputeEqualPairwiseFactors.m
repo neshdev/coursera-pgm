@@ -18,6 +18,11 @@ n = length(images);
 
 factors = repmat(struct('var', [], 'card', [], 'val', []), n - 1, 1);
 
-% Your code here:
+for i=1:n-1
+  f = factors(i);
+  f.var = [i,i+1];
+  f.card = [K, K];
+  f.val = ones(1, prod(f.card));
+endfor
 
 end
